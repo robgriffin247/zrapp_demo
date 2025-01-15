@@ -9,9 +9,7 @@ def get_rider(id):
     response = httpx.get(url, headers=header, timeout=30)
     response.raise_for_status()
 
-    data = response.json()
-    
-    return data
+    return response.json()
 
 
 # ``GET /riders/<id>/<time>``

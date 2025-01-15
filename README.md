@@ -67,12 +67,10 @@ This function demonstrates the use of the ZRapp API to get the data for a specif
         header = {'Authorization':st.secrets['api']['key']}
         url = f'https://zwift-ranking.herokuapp.com/public/riders/{id}'
 
-        response = httpx.get(url, headers=header)
+        response = httpx.get(url, headers=header, timeout=30)
         response.raise_for_status()
 
-        data = response.json()
-        
-        return data
+        return response.json()
 
     print(get_rider(4598636))
     ```
