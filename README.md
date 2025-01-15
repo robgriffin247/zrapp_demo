@@ -1,7 +1,8 @@
 # ZwiftRacing.app API
 
-
 > ZwiftRacing is a cutting-edge web application designed for avid cyclists and competitive racing enthusiasts who use Zwift, the popular online cycling platform. With ZwiftRacing (ZR), you can take your virtual cycling experience to the next level by participating in organized races using the first result-based categorization system ever made for indoor cycling. &mdash; [zwiftracing.app](https://www.zwiftracing.app/docs)
+
+
 
 
 ### ZRapp API
@@ -12,7 +13,6 @@ To get access to the ZRapp API, you first need to join the ZRapp Discord server,
 
 **Be careful to add the `.env` and/or `.streamlit/secrets.toml` paths to your `.gitignore` file if using Git. Do not share the API key &mdash; it is yours and should be handled with respsect.**
 
-
 - `.gitignore`
 
     ```
@@ -21,6 +21,7 @@ To get access to the ZRapp API, you first need to join the ZRapp Discord server,
     ```
 
 - `.env`
+
     ```
     key=myapikey12345
     ```
@@ -31,6 +32,9 @@ To get access to the ZRapp API, you first need to join the ZRapp Discord server,
     [api]
     key="myapikey12345"
     ```
+
+
+
 
 ### Endpoints
 
@@ -54,6 +58,9 @@ To get access to the ZRapp API, you first need to join the ZRapp Discord server,
 - ``GET /results/<id>``
 
 -->
+
+
+
 
 ## Demos
 
@@ -104,6 +111,9 @@ This function demonstrates the use of the ZRapp API to get the data for a specif
      'zpFTP': 308}
                             
     ```
+
+
+
 
 ### Load data using DLT
 
@@ -162,7 +172,10 @@ This function demonstrates the use of the ZRapp API to get the data for a specif
     │  2345678 │ fake_name 2          │ F       │ ca      │    170 │ … │                    7 │ Gold                 │                    7 │ Gold                 │   ...    
     ```
 
-### Transforming data with DuckDB SQL
+
+
+
+### Transform data with DuckDB
 
 Once data is staged to the local DuckDB database, the `duckdb` module can be used to query the database with SQL.
 
@@ -209,6 +222,10 @@ with duckdb.connect('zrapp.duckdb') as con:
 print(con.sql('select * from core.dim_riders'))
 print(con.sql('describe staging.stg_riders'))
 ```
+
+
+
+
 <!-- 
 ### Create a dashboard in Streamlit
 -->
