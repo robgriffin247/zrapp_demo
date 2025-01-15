@@ -1,0 +1,5 @@
+.streamlit/secrets.toml
+.env
+test.py
+app.py
+zrapp.duckdb

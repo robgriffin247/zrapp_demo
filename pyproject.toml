@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "zrapp-demo"
+version = "0.1.0"
+description = ""
+authors = ["robgriffin247 <robgriffin247@hotmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.12,<3.13"
+httpx = "^0.28.1"
+streamlit = "^1.41.1"
+dlt = "^1.5.0"
+duckdb = "^1.1.3"
+polars = "^1.19.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
