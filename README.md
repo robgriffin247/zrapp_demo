@@ -47,18 +47,7 @@ To get access to the ZRapp API, you first need to join the ZRapp Discord server,
 |``/clubs/<id>/<riderId>``|``Get``|Returns details for a club, including (up to) 1000 active riders, starting from a given rider - rider data is stored in order of ascending ``riderId``.|
 |``/results/<id>``|``Get``|Returns details for an event.|
 
-<!-- 
-#### Endpoint Examples
-
-- ``GET /riders/<id>``
-- ``GET /riders/<id>/<time>``
-- ``POST /riders``
-- ``GET /clubs/<id>``
-- ``GET /clubs/<id>/<riderId>``
-- ``GET /results/<id>``
-
--->
-
+You can find functions to query each ``GET`` endpoint, plus a function combining ``/clubs/<id>`` and ``/clubs/<id>/<riderId>`` to get *all* riders in a club, in [``zrapp/endpoints.py``](https://github.com/robgriffin247/zrapp_demo/zrapp/endpoints.py). The function for the ``POST`` request to ``riders`` is on its way.
 
 
 
