@@ -107,7 +107,7 @@ This function demonstrates the use of the ZRapp API to get the data for a specif
 
 ### Load data using DLT
 
-DLT (Data Load Tool) eases the process of transforming nested json files into tables. DLT automatically unnests the data into suitable tables and loads them into a duckdb database. This demo shows how DLT can be used to unpack the nested json data received from a request to get all club riders.
+[DLT](https://dlthub.com/docs/intro) eases the process of transforming nested json files into tables. DLT automatically unnests the data into suitable tables and loads them into a duckdb database. This demo shows how DLT can be used to unpack the nested json data received from a request to get all club riders.
 
 - `./demos/dlt.py`
 
