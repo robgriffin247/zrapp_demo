@@ -69,7 +69,7 @@ Once data is staged to the local DuckDB database, the `duckdb` module can be use
 
 ### Visualise data with Streamlit
 
-Streamlit is a tool that can be used to create webapps. [This demo](https://github.com/robgriffin247/zrapp_demo/blob/main/streamlit_demo.py) collects data for given rider IDs, creates a table of power data and plots power curves for the riders included.
+Streamlit is a tool that can be used to create webapps. [This demo](https://github.com/robgriffin247/zrapp_demo/blob/main/streamlit_demo.py) collects data for given rider IDs, creates a table of power data and plots power curves for the riders included. Run the app with ``streamlit run streamlit_demo.py``.
 
 ![streamlit](images/streamlit_screenshot.jpeg)
 
