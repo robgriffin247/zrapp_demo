@@ -55,164 +55,22 @@ You can find my functions to query each ``GET`` endpoint, plus a function combin
 
 ### Get data from ZRapp API
 
-This function demonstrates the use of the ZRapp API to get the data for a specific rider, given by rider ID. 
-
-- ``./demos/request.py``
-
-    ```{python } 
-    import httpx
-    import streamlit as st
-
-    def get_rider(id):
-        header = {'Authorization':st.secrets['api']['key']}
-        url = f'https://zwift-ranking.herokuapp.com/public/riders/{id}'
-
-        response = httpx.get(url, headers=header, timeout=30)
-        response.raise_for_status()
-
-        return response.json()
-
-    print(get_rider(4598636))
-    ```
-
-- Output:
-
-    ```
-    {'club': {'id': 20650, 'name': 'Tea & Scone'},
-     'country': 'se',
-     'gender': 'M',
-     'handicaps': {'profile': {'flat': 57.48481100417995,
-                             'hilly': 12.318173786610082,
-                             'mountainous': -61.13099044501623,
-                             'rolling': 39.00755032426495}},
-     'height': 185,
-     'name': 'Rob Griffin',
-     'phenotype': {'bias': 5.6000000000000085,
-                 'scores': {'climber': 85.5,
-                             'puncheur': 93.1,
-                             'pursuiter': 89.7,
-
-                            ....
-        
-     'zpCategory': 'B',
-     'zpFTP': 308}
-                            
-    ```
-
-
-
+[This demonstrates](https://github.com/robgriffin247/zrapp_demo/blob/main/demos/request_demo.py) the use of the ZRapp API to get the data for a specific rider, given by rider ID. It returns a dictionary of data including rider ID, descriptive data (name, weight, height, country), power data and ZRapp phenotype data.
 
 ### Load data using DLT
 
-[DLT](https://dlthub.com/docs/intro) eases the process of transforming nested json files into tables. DLT automatically unnests the data into suitable tables and loads them into a duckdb database. This demo shows how DLT can be used to unpack the nested json data received from a request to get all club riders.
-
-- ``./demos/dlt.py``
-
-    ```{python}
-    import streamlit as st
-    import httpx
-    import dlt
-    import duckdb
-
-    # Raw Data: JSON data from ZRapp API -------------------------------------------
-    def get_club_riders(id):
-        header = {'Authorization':st.secrets['api']['key']}
-        url = f'https://zwift-ranking.herokuapp.com/public/clubs/{id}'
-        response = httpx.get(url, headers=header)
-        response.raise_for_status()
-        return response.json()['riders']
-
-    data = get_club_riders(20650)
-
-
-    # DLT --------------------------------------------------------------------------
-    # DLT loads data from a (nested) json object into a duckdb database
-    pipeline = dlt.pipeline(
-        pipeline_name='zrapp',  # Name of the .duckdb file to be created/used
-        destination='duckdb',   # Type of database
-        dataset_name='staging', # Schema name
-    )
-
-    # Run the pipeline
-    load_info = pipeline.run(data,
-                            table_name='stg_riders',
-                            write_disposition='merge', # Will merge data on to table keeping the most recent
-                            primary_key='rider_id')    # Key for merging
-
-    # Check the run
-    print(load_info)
-
-    # Verification: using duckdb to view the data
-    with duckdb.connect('zrapp.duckdb') as con:
-        print(con.sql('select * from staging.stg_riders'))
-
-    ```
-
-- Output:
-
-    ```{bash}
-    ┌──────────┬──────────────────────┬─────────┬─────────┬────────┬───┬──────────────────────┬──────────────────────┬──────────────────────┬──────────────────────┬──────────────────────┐
-    │ rider_id │         name         │ gender  │ country │ height │ … │ race__current__wom…  │ race__max30__women…  │ race__max30__women…  │ race__max90__women…  │ race__max90__women…  │
-    │  int64   │       varchar        │ varchar │ varchar │ int64  │   │        int64         │       varchar        │        int64         │       varchar        │        int64         │
-    ├──────────┼──────────────────────┼─────────┼─────────┼────────┼───┼──────────────────────┼──────────────────────┼──────────────────────┼──────────────────────┼──────────────────────┤
-    │  1234567 │ fake_name 1          │ M       │ us      │    177 │ … │                 NULL │ NULL                 │                 NULL │ NULL                 │                 NULL │
-    │  2345678 │ fake_name 2          │ F       │ ca      │    170 │ … │                    7 │ Gold                 │                    7 │ Gold                 │   ...    
-    ```
-
-
+[DLT](https://dlthub.com/docs/intro) eases the process of transforming nested json files into tables. DLT automatically unnests the data into suitable tables and loads them into a duckdb database. [This demo](https://github.com/robgriffin247/zrapp_demo/blob/main/demos/dlt_demo.py) shows how DLT can be used to unpack the nested json data received from a request to get all club riders.
 
 
 ### Transform data with DuckDB
 
-Once data is staged to the local DuckDB database, the `duckdb` module can be used to query the database with SQL.
-
-```{python}
-import duckdb
-
-with duckdb.connect('zrapp.duckdb') as con:
-    data = con.sql(f'''
-                    with 
-                        source as (select * from staging.stg_riders),
-                        
-                        fix_weight as (
-                            select * exclude(weight),
-                                -- DLT issue: loads floats as ints if round to .0
-                                coalesce(weight, weight__v_double) as weight
-                            from source
-                        ),
-
-                        select_variables as (
-                            select 
-                                rider_id,
-                                name as rider,
-                                weight,
-                                power__w5 as watts_5,
-                                power__w60 as watts_60,
-                                power__w300 as watts_300
-                            from fix_weight),
-                        
-                        derive_wkg as (
-                            select *,
-                                watts_5/weight as wkg_5,
-                                watts_60/weight as wkg_60,
-                                watts_300/weight as wkg_300
-                            from select_variables
-                        )
-                    
-                    select * from derive_wkg
-                    
-                    ''').pl()
-    con.sql('create schema if not exists core')
-    con.sql('create or replace table core.dim_riders as select * from data')
-    
-
-print(con.sql('select * from core.dim_riders'))
-print(con.sql('describe staging.stg_riders'))
-```
+Once data is staged to the local DuckDB database, the `duckdb` module can be used to query the database with SQL. [This demonstrates](https://github.com/robgriffin247/zrapp_demo/blob/main/demos/duckdb_demo.py) how to get data in and out of duckdb and do some SQL based transformations.
 
 
+### Visualise data with Streamlit
+
+Streamlit is a tool that can be used to create webapps. [This demo](https://github.com/robgriffin247/zrapp_demo/blob/main/streamlit_demo.py) collects data for given rider IDs, creates a table of power data and plots power curves for the riders included.
+
+![streamlit](images/streamlit_screenshot.jpeg)
 
 
-<!-- 
-### Create a dashboard in Streamlit
--->

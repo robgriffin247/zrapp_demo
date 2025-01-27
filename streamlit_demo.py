@@ -107,11 +107,11 @@ if len(data)>0:
                           'name':'Rider',})
 
     fig.update_layout(legend=dict(
-        orientation="h",
-        yanchor="bottom",
-        y=1.02,
-        xanchor="right",
-        x=1
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1
         ),
         xaxis = dict(
             tickmode = 'array',
