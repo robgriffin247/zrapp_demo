@@ -7,9 +7,9 @@
 
 ### ZRapp API
 
-ZwiftRacing.app also has an API providing endpoints that allow users to programmatically fetch ZRapp data. This includes data on riders, clubs and events. The API is hsoted at [https://zwift-ranking.herokuapp.com/public/](https://zwift-ranking.herokuapp.com/public/). You may encounter another ZRapp API address &mdash; please don't use that one, it is used by the ZwiftRacing.app and needs to be kept free from unnecessary traffic!
+ZwiftRacing.app also has an API providing endpoints that allow users to programmatically fetch ZRapp data. This includes data on riders, clubs and events. The API is hosted at [https://zwift-ranking.herokuapp.com/public/](https://zwift-ranking.herokuapp.com/public/). You may encounter another ZRapp API address &mdash; please don't use that one, it is used by the ZwiftRacing.app and needs to be kept free from unnecessary traffic!
 
-To get access to the ZRapp API, you first need to join the ZRapp Discord server, then send Tim Hanson a message to request access to the API. Tim will then give you an API key. Store this key in a ``.env`` file in the root directory of your project or, if using streamlit, in `.streamlit/secrets.toml`. Note that my code is all written for use with Streamlit so, if using ``.env``, you will need to switch those parts out accordingly (from calling ``st.secrets['api']['key']`` to ``os.getenv('key')``).
+To get access to the ZRapp API, you first need to join the ZRapp Discord server, then send Tim Hanson a message to request access to the API. Tim can then give you an API key. Store this key in a ``.env`` file in the root directory of your project or, if using streamlit, in `.streamlit/secrets.toml`. Note that my code is all written for use with Streamlit so, if using ``.env``, you will need to switch those parts out accordingly (from calling ``st.secrets['api']['key']`` to ``os.getenv('key')``).
 
 **Be careful to add the ``.env`` and/or ``.streamlit/secrets.toml`` paths to your ``.gitignore`` file if using Git. Do not share the API key &mdash; it is yours and should be handled with respsect.**
 

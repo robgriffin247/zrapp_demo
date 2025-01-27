@@ -38,4 +38,4 @@ with duckdb.connect('zrapp.duckdb') as con:
     
     print(con.sql('select * from core.dim_riders'))
 
-    print(con.sql('describe staging.stg_riders'))
+    print(con.sql('select column_name from (describe staging.stg_riders)').fetchall())

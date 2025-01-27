@@ -3,16 +3,41 @@ import httpx
 import dlt
 import duckdb
 
-# Raw Data: JSON data from ZRapp API -------------------------------------------
+
+# Get ALL club riders (combo of get_club() and get_club_from_rider())
 def get_club_riders(id):
-    header = {'Authorization':st.secrets['api']['key']}
-    url = f'https://zwift-ranking.herokuapp.com/public/clubs/{id}'
-    response = httpx.get(url, headers=header)
-    response.raise_for_status()
-    return response.json()['riders']
+
+    def get_club(id):
+        header = {'Authorization':st.secrets['api']['key']}
+        url = f'https://zwift-ranking.herokuapp.com/public/clubs/{id}'
+
+        response = httpx.get(url, headers=header, timeout=30)
+        response.raise_for_status()
+
+        return response.json()
+
+
+    def get_club_from_rider(club, rider):
+        header = {'Authorization':st.secrets['api']['key']}
+        url = f'https://zwift-ranking.herokuapp.com/public/clubs/{club}/{rider}'
+
+        response = httpx.get(url, headers=header, timeout=30)
+        response.raise_for_status()
+
+        return response.json()
+    
+
+    riders = get_club(id)['riders']
+    page_length = len(riders)
+    while page_length==1000:
+        next_riders = get_club_from_rider(id, 1 + riders[-1]['riderId'])['riders']
+        page_length = len(next_riders)
+        for rider in next_riders:
+            riders.append(rider)
+
+    return riders
 
 data = get_club_riders(20650)
-
 
 # DLT --------------------------------------------------------------------------
 # DLT loads data from a (nested) json object into a duckdb database

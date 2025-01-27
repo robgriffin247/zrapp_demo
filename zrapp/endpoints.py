@@ -1,5 +1,6 @@
 import httpx
 import streamlit as st
+import json
 
 # ``GET /riders/<id>``
 def get_rider(id):
@@ -22,6 +23,25 @@ def get_rider_at_time(id, time):
     response.raise_for_status()
     
     return response.json()
+
+
+# ``POST /riders/``
+# Takes a list of integers as rider_ids, e.g. get_riders([123, 456, 789])
+def get_riders(rider_ids):
+    header = {'Authorization':st.secrets['api']['key']}
+    url = f'https://zwift-ranking.herokuapp.com/public/riders/'
+
+    response = httpx.post(url,
+                          headers=header, 
+                          json=rider_ids, 
+                          timeout=30)
+    response.raise_for_status()
+
+    content = response.content
+    decoded = content.decode(encoding='utf-8')
+    data = json.loads(decoded)
+
+    return data
 
 
 # ``GET /clubs/<id>``
