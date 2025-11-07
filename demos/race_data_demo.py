@@ -56,5 +56,6 @@ if __name__=="__main__":
 
     # Alternative:
     riders = get_zp_results(5144359)
+    print(riders)
     for rider in riders:
         print(rider.get("male"))
