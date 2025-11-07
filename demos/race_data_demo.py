@@ -42,17 +42,17 @@ def get_zp_results(id:int):
 
 
 if __name__=="__main__":
-    # # First approach:
-    # # Get the riders that took part in the event
-    # riders = get_event(5144359)
+    # First approach:
+    # Get the riders that took part in the event
+    riders = get_event(5144359)
 
-    # # Get the ids oft hose riders into a list of integers
-    # ids = [rider["riderId"] for rider in riders]
+    # Get the ids oft hose riders into a list of integers
+    ids = [rider["riderId"] for rider in riders]
 
-    # # Pass the list of integers as payload for POST request to riders endopint
-    # detailed_riders = get_riders(ids)
+    # Pass the list of integers as payload for POST request to riders endopint
+    detailed_riders = get_riders(ids)
     
-    # print(detailed_riders)
+    print(detailed_riders)
 
     # Alternative:
     riders = get_zp_results(5144359)
